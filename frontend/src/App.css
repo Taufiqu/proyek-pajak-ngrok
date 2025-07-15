@@ -1,0 +1,493 @@
+/* ==========================================================================
+   🌐 GLOBAL STYLES & VARIABLES
+   ========================================================================== */
+:root {
+  --primary: #2C3E50;
+  --primary-light: #34495E;
+  --primary-dark: #1A252F;
+  --secondary: #F4C542;
+  --success: #27ae60;
+  --error: #e74c3c;
+  --text: #333;
+  --background: #ecf0f1;
+}
+
+html { font-size: 14px; }
+
+body {
+  background: var(--background);
+  font-family: 'Segoe UI', Roboto, 'Open Sans', sans-serif;
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+}
+
+html, body, #root, .App {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: url('../public/background_pattern.png') repeat;
+  opacity: 0.06;
+  z-index: -1;
+}
+
+/* Halaman normal */
+.App {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+.page-title {
+  font-size: clamp(1.8rem, 4vw, 2.4rem);
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  letter-spacing: 0.5px;
+}
+
+
+/* ==========================================================================
+   🧭 NAVIGATION
+   ========================================================================== */
+.navbar {
+  background: var(--primary);
+  padding: 1rem 1.2rem;
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: color 0.2s ease;
+}
+.navbar a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: color 0.2s ease, text-decoration 0.2s ease, transform 0.2s ease;
+}
+.navbar a.active {
+  color: var(--secondary);
+  border-bottom: 2px solid var(--secondary);
+  padding-bottom: 2px;
+}
+
+.navbar a:hover {
+  color: var(--secondary);
+  text-underline-offset: 5px;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 1.1rem;
+  transition: color 0.3s ease, text-decoration 0.3s ease, transform 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--secondary);
+  transform: translateY(-2px);
+  text-underline-offset: 5px;
+}
+
+.nav-link.active {
+  color: var(--secondary);
+  border-bottom: 2px solid var(--secondary);
+  padding-bottom: 2px;
+}
+
+.navbar {
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: fadeInNavbar 0.6s ease-out forwards;
+}
+
+@keyframes fadeInNavbar {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* ==========================================================================
+   📱 MOBILE NAVIGATION
+   ========================================================================== */
+.mobile-navbar {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  background: var(--primary);
+  padding: 1rem;
+  z-index: 1000;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+.mobile-navbar.open {
+  transform: translateY(0);
+}
+.mobile-navbar.closed {
+  transform: translateY(-100%);
+}
+
+
+/* ==========================================================================
+   📦 CARD / CONTAINER
+   ========================================================================== */
+.card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  margin-bottom: 1.5rem;
+  text-align: left;
+  transition: 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+
+/* ==========================================================================
+   🧾 FORM & INPUT
+   ========================================================================== */
+.form-validator h3 {
+  font-size: 1.5rem;
+  color: var(--primary);
+}
+
+label {
+  display: block;
+  margin: 1rem 0 0.5rem;
+  font-weight: bold;
+  font-size: 1.05rem;
+}
+
+input, textarea {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1.05rem;
+  box-sizing: border-box;
+  transition: border 0.2s ease;
+}
+
+input:focus, textarea:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(44, 62, 80, 0.1);
+}
+
+.textarea-field {
+  resize: vertical;
+  font-family: inherit;
+}
+
+
+/* ==========================================================================
+   🖼️ PREVIEW
+   ========================================================================== */
+.preview-form-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-top: 1.5rem;
+}
+
+.preview-column,
+.form-column {
+  flex: 1;
+  min-width: 300px;
+}
+
+.preview-img,
+img.preview {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-width: 400px;
+}
+
+
+/* ==========================================================================
+   🔘 BUTTONS
+   ========================================================================== */
+.button, button {
+  background: var(--primary);
+  color: white;
+  padding: 0.7rem 1.4rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.05rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 0.5rem;
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.button:hover:not(:disabled),
+button:hover:not(:disabled) {
+  background: var(--primary-dark);
+}
+
+.button:active {
+  transform: scale(0.97);
+}
+
+button:disabled {
+  background: #e0e0e0;
+  color: #999;
+  cursor: not-allowed;
+}
+
+.button-secondary {
+  background: var(--secondary);
+  color: var(--primary);
+}
+
+.save-button { background: #e67e22; }
+.save-all-button { background: #8e44ad; }
+.export-button { background: var(--success); }
+.delete-button {
+  background: var(--error);
+  padding: 0.4rem 0.8rem;
+}
+.reset-button { background: #ffd000;}
+
+
+/* ==========================================================================
+   📊 TABLE
+   ========================================================================== */
+.table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  font-size: 1rem;
+  margin-top: 1.2rem;
+}
+
+thead th {
+  background: var(--primary);
+  color: white;
+  padding: 0.8rem;
+  text-align: left;
+  font-size: 1.05rem;
+}
+
+tbody tr:nth-child(even) {
+  background: #f4f4f4;
+}
+
+tbody td {
+  padding: 0.8rem;
+  border-top: 1px solid #ddd;
+}
+
+
+/* ==========================================================================
+   📚 TUTORIAL / PANEL
+   ========================================================================== */
+.tutorial-panel {
+  margin-top: 1.5rem;
+  border-left: 5px solid var(--secondary);
+  padding-left: 1rem;
+}
+
+.tutorial-panel h3 {
+  color: var(--primary);
+  font-size: 1.5rem;
+}
+
+.tutorial-panel ol {
+  padding-left: 1.5rem;
+  font-size: 1.1rem;
+  line-height: 1.8;
+}
+
+.tutorial-footer {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+  color: #035800;
+}
+
+.tutorial-footer-note {
+  margin-top: 1rem;
+  color: #e53935;
+  font-size: 1rem;
+}
+
+
+/* ==========================================================================
+   ⚠️ FEEDBACK & UTIL
+   ========================================================================== */
+.error-text { color: var(--error); font-weight: bold; }
+.success-text { color: var(--success); font-weight: bold; }
+
+.warning-text {
+  color: #d9363e;
+  font-weight: bold;
+  margin-top: 0.3rem;
+  text-align: left;
+}
+
+.input-warning {
+  border: 2px solid #ff4d4f;
+  background-color: #fff1f0;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.delete-file-btn {
+  background: none;
+  border: none;
+  color: red;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+
+/* ==========================================================================
+   🖼️ MODAL IMAGE
+   ========================================================================== */
+.modal-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  flex-grow: 1;
+}
+
+.modal-image {
+  max-width: 70vw;
+  max-height: 85vh;
+  transform-origin: center center;
+  transition: transform 0.1s ease-out;
+}
+
+.modal-overlay {
+  position: fixed;
+  z-index: 9999;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal-content {
+  position: relative;
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+}
+.modal-close-btn {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #fff;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   LANDING PAGE
+   ========================================================================== */
+
+.landing-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+body.landing-body {
+  overflow: hidden;
+}
+
+.landing-container {
+  width: 100%;
+  height: 100%;
+  max-width: none; /* 🚫 Jangan limit dia */
+  max-height: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  background-color: var(--background);
+}
+
+/* ==========================================================================
+   📱 RESPONSIVE DESIGN
+   ========================================================================== */
+@media (max-width: 768px) {
+  html { font-size: 16px; }
+  body { padding: 1rem; }
+
+  .page-title { font-size: 1.8rem; }
+
+  .navbar {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .preview-form-container {
+    flex-direction: column;
+  }
+
+  .preview-column, .form-column {
+    width: 100%;
+  }
+
+  .navigation-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .navigation-buttons button {
+    width: 100%;
+    margin: 0;
+  }
+}
