@@ -172,6 +172,9 @@ const BuktiSetorPage = () => {
     }
 
     toast.info("Form berhasil di-reset 🚿");
+    console.log("🧠 validationResults:", validationResults);
+    console.log("🖼️ preview_filename current index:", validationResults[currentIndex]?.preview_filename);
+    console.log("🔍 Image modal src:", modalSrc);
   };
 
   return (
@@ -205,7 +208,8 @@ const BuktiSetorPage = () => {
                     onDataChange={handleDataChange}
                     onSave={() => handleSaveItem(data.id)}
                     onImageClick={() =>
-                      setModalSrc(`/api/bukti_setor/uploads/${data.preview_filename}`)}
+                        setModalSrc(`http://localhost:5000/api/bukti_setor/uploads/${validationResults[currentIndex]?.preview_filename}`)
+}
                   />
                 </div>
                 <NavigationButtonsBuktiSetor
@@ -221,7 +225,7 @@ const BuktiSetorPage = () => {
             ))}
             {modalSrc && (
               <ImageModal
-                src={`http://localhost:5000${modalSrc}`} // atau langsung `modalSrc` kalau udah full URL
+                src={modalSrc} // atau langsung `modalSrc` kalau udah full URL
                 onClose={() => setModalSrc(null)}
               />
             )}
