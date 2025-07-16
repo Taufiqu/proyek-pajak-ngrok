@@ -1,7 +1,6 @@
-//MainOCRPage.jsx
+// MainOCRPage.jsx
 
-import React, { useState, useRef } from "react";
-import { useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { toast } from "react-toastify";
 import UploadForm from "./UploadForm";
 import PreviewPanel from "./PreviewPanel";
@@ -11,7 +10,7 @@ import TutorialPanel from "./TutorialPanel";
 import Layout from "../Layout";
 import LoadingSpinner from "../LoadingSpinner";
 import ImageModal from "./ImageModal";
-import { 
+import {
   processFaktur,
   saveFaktur,
 } from "../../services/api";
@@ -25,7 +24,8 @@ function App() {
   const [uploadError, setUploadError] = useState("");
   const [modalSrc, setModalSrc] = useState(null);
 
-  // Load hasil dari localStorage saat pertama kali komponen render
+  const fileInputRef = useRef(null);
+
   useEffect(() => {
     const savedPages = localStorage.getItem("formPages");
     const savedIndex = localStorage.getItem("formIndex");
@@ -35,15 +35,12 @@ function App() {
     }
   }, []);
 
-    useEffect(() => {
-      if (formPages.length > 0) {
-        localStorage.setItem("formPages", JSON.stringify(formPages));
-        localStorage.setItem("formIndex", currentIndex);
-      }
-    }, [formPages, currentIndex]);
-
-  const fileInputRef = useRef(null);
-
+  useEffect(() => {
+    if (formPages.length > 0) {
+      localStorage.setItem("formPages", JSON.stringify(formPages));
+      localStorage.setItem("formIndex", currentIndex);
+    }
+  }, [formPages, currentIndex]);
 
   const handleUpload = async (e) => {
     e.preventDefault();
@@ -161,13 +158,14 @@ function App() {
     setCurrentIndex(0);
 
     if (fileInputRef.current) {
-          fileInputRef.current.value = null;
-        }
-    
-        toast.info("Form berhasil di-reset 🚿");
-  }
+      fileInputRef.current.value = null;
+    }
 
-  const currentData = formPages[currentIndex]?.data;
+    toast.info("Form berhasil di-reset 🚿");
+  };
+
+  // GANTI INI BRO
+  const currentPage = formPages[currentIndex];
 
   return (
     <Layout>
@@ -190,17 +188,18 @@ function App() {
           <div className="preview-form-container">
             <div className="preview-column">
               <PreviewPanel
-                data={currentData}
+                data={currentPage}
                 onImageClick={() =>
-                  setModalSrc(`${process.env.REACT_APP_API_URL}/preview/${currentData.preview_image}`)
+                  setModalSrc(`${process.env.REACT_APP_API_URL}/preview/${currentPage.preview_image}`)
                 }
               />
             </div>
             <div className="form-column">
               <ValidationForm
-                data={currentData}
+                data={currentPage.data}
                 onImageClick={() =>
-                      setModalSrc(`${process.env.REACT_APP_API_URL}/preview/${currentData.preview_image}`)}
+                  setModalSrc(`${process.env.REACT_APP_API_URL}/preview/${currentPage.preview_image}`)
+                }
                 updateData={(updatedFields) => {
                   const updated = [...formPages];
                   updated[currentIndex].data = {
@@ -226,6 +225,7 @@ function App() {
       ) : (
         !isProcessing && <TutorialPanel />
       )}
+
       {modalSrc && (
         <ImageModal
           src={modalSrc}
