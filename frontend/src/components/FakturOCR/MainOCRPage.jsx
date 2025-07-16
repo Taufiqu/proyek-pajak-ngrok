@@ -167,6 +167,10 @@ function App() {
   // GANTI INI BRO
   const currentPage = formPages[currentIndex];
 
+  console.log("🧠 currentPage (dari formPages):", currentPage);
+  console.log("🖼️ preview_image:", currentPage?.preview_image);
+  console.log("🔍 src:", `${process.env.REACT_APP_API_URL}/preview/${currentPage?.preview_image}`);
+
   return (
     <Layout>
       {isProcessing && <LoadingSpinner message="Sedang memproses file..." />}
