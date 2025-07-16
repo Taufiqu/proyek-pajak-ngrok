@@ -6,6 +6,7 @@ const PreviewPanel = ({ data, onImageClick }) => {
   console.log("🧪 Data masuk ke PreviewPanel:", data);
   console.log("🧪 preview_image:", data.preview_image);
   console.log("🧪 Final img src:", `${process.env.REACT_APP_API_URL}/preview/${data.preview_image}`);
+  console.log("📸 Final Preview Image:", data.preview_image);
 
   return (
     <div className="preview-panel">
