@@ -35,14 +35,10 @@ from bukti_setor.routes import laporan_bp  # pastikan ini diimpor untuk digunaka
 # ==============================================================================
 app = Flask(__name__)
 app.config.from_object(Config)
-ngrok_url = "https://714a4a7e8c63.ngrok-free.app"
-vercel_url = "https://proyek-pajak.vercel.app"
-CORS(app, origins=[
-    "http://localhost:3000",
-    "http://127.0.0.1:3000", 
-    vercel_url, 
-    ngrok_url
-], supports_credentials=True)
+ngrok_url = "https://boxer-funky-illegally.ngrok-free.app"
+vercel_url = "https://pajak-ocr.vercel.app/"
+CORS(app, origins="*")  # sementara buat development
+# CORS(app, origins=[ngrok_url, vercel_url])  # untuk produksi
 
 db.init_app(app)
 app.register_blueprint(bukti_setor_bp)
