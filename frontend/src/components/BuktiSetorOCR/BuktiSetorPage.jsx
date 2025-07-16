@@ -207,9 +207,12 @@ const BuktiSetorPage = () => {
                     itemData={data}
                     onDataChange={handleDataChange}
                     onSave={() => handleSaveItem(data.id)}
-                    onImageClick={() =>
-                        setModalSrc(`http://localhost:5000/api/bukti_setor/uploads/${validationResults[currentIndex]?.preview_filename}`)
-}
+                    onImageClick={() => {
+                      const newSrc = `http://localhost:5000/api/bukti_setor/uploads/${validationResults[currentIndex]?.preview_filename}`;
+                      console.log("🖱️ Clicked image, set modalSrc to:", newSrc);
+                      setModalSrc(newSrc);
+                    }}
+                    previewImageUrl={`http://localhost:5000/api/bukti_setor/uploads/${data.preview_filename}`}
                   />
                 </div>
                 <NavigationButtonsBuktiSetor
