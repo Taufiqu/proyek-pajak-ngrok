@@ -208,7 +208,8 @@ const BuktiSetorPage = () => {
                     onDataChange={handleDataChange}
                     onSave={() => handleSaveItem(data.id)}
                     onImageClick={() => {
-                      const newSrc = `http://localhost:5000/api/bukti_setor/uploads/${validationResults[currentIndex]?.preview_filename}`;
+                      const baseUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
+                      const newSrc = `${baseUrl}/api/bukti_setor/uploads/${validationResults[currentIndex]?.preview_filename}`;
                       console.log("🖱️ Clicked image, set modalSrc to:", newSrc);
                       setModalSrc(newSrc);
                     }}
