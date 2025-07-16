@@ -42,9 +42,11 @@ const BuktiSetorValidationForm = ({
             className="preview-img"
             onClick={onImageClick}
             style={{ cursor: "zoom-in" }}
-            />
-        <h3>Preview Bukti Setor</h3>
-        <p>Halaman: {itemData.halaman}</p>
+            onError={(e) => {
+                e.target.onerror = null;
+                e.target.src = "/fallback.jpg"; // atur default fallback image
+            }}
+        />
         </div>
 
         {/* KANAN: Form Validasi */}
