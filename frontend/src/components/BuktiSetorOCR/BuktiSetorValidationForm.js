@@ -37,12 +37,14 @@ const BuktiSetorValidationForm = ({
         {/* KIRI: Preview Gambar */}
         <div className="preview-column">
         <img
-            src={`/api/bukti_setor/uploads/${itemData.preview_filename}`}
+            src={`${process.env.REACT_APP_API_URL}/bukti_setor/uploads/${itemData.preview_filename}`}
             alt="Preview"
             className="preview-img"
             onClick={onImageClick}
             style={{ cursor: "zoom-in" }}
-        />
+            />
+        <h3>Preview Bukti Setor</h3>
+        <p>Halaman: {itemData.halaman}</p>
         </div>
 
         {/* KANAN: Form Validasi */}
