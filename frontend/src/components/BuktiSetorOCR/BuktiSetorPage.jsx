@@ -60,7 +60,6 @@ const BuktiSetorPage = () => {
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const fileInputRef = useRef(null);
-  const [files, setFiles] = useState([]);
 
   // 🔄 Proses file upload satu per satu
  const handleProcess = async () => {
@@ -118,8 +117,6 @@ const BuktiSetorPage = () => {
     const item = validationResults.find((val) => val.id === id);
     if (!item) return;
 
-    console.log("[🛰️ DATA YANG DIKIRIM KE BACKEND]", item); // Tambahin ini!
-
     try {
       await saveBuktiSetor(item);
       toast.success("Data berhasil disimpan.");
@@ -158,7 +155,6 @@ const BuktiSetorPage = () => {
     // 🔄 Reset semua state utama
     setSelectedFiles([]);
     setValidationResults([]);
-    setFiles([]);
     setCurrentIndex(0);
     setModalSrc(null);
     setUploadError("");
@@ -174,9 +170,6 @@ const BuktiSetorPage = () => {
     }
 
     toast.info("Form berhasil di-reset 🚿");
-    console.log("🧠 validationResults:", validationResults);
-    console.log("🖼️ preview_filename current index:", validationResults[currentIndex]?.preview_filename);
-    console.log("🔍 Image modal src:", modalSrc);
   };
 
   return (
@@ -212,7 +205,6 @@ const BuktiSetorPage = () => {
                     onImageClick={() => {
                       const baseUrl = process.env.REACT_APP_API_URL || "http://localhost:5000";
                       const newSrc = `${baseUrl}/api/bukti_setor/uploads/${validationResults[currentIndex]?.preview_filename}`;
-                      console.log("🖱️ Clicked image, set modalSrc to:", newSrc);
                       setModalSrc(newSrc);
                     }}
                   />

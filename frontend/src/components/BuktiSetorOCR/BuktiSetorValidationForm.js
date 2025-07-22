@@ -37,7 +37,7 @@ const BuktiSetorValidationForm = ({
   const imageUrl = `${process.env.REACT_APP_API_URL}/bukti_setor/uploads/${itemData.preview_filename}`;
 
   return (
-    <div className="preview-form-container">
+    <div className="bukti-setor-form-content">
       {/* KIRI: Preview Gambar */}
       <div className="preview-column">
         {!imgLoadError ? (
