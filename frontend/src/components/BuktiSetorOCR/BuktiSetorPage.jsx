@@ -67,6 +67,7 @@ const BuktiSetorPage = () => {
     return;
   }
 
+  console.log("🚀 Starting process with files:", selectedFiles);
   toast.info("Mulai memproses file, mohon tunggu...");
   setIsProcessing(true);
   setValidationResults([]);
@@ -77,11 +78,17 @@ const BuktiSetorPage = () => {
   try {
     for (let i = 0; i < selectedFiles.length; i++) {
       const file = selectedFiles[i];
+      console.log(`📁 Processing file ${i + 1}/${selectedFiles.length}:`, file.name);
+      
       const formData = new FormData();
       formData.append("file", file);
 
+      console.log("🌐 Sending request to processBuktiSetor...");
       const res = await processBuktiSetor(formData);
+      console.log("✅ Response received:", res);
+      
       const rawData = res.data?.data || [];
+      console.log("📄 Raw data from backend:", rawData);
 
       const formatted = rawData.map((item) => ({
         ...item,
@@ -89,14 +96,17 @@ const BuktiSetorPage = () => {
         preview_filename: item.preview_filename || file.name,
       }));
 
+      console.log("🔧 Formatted data:", formatted);
       setValidationResults((prev) => [...prev, ...formatted]);
     }
   } catch (err) {
     console.error("❌ Gagal proses file:", err);
+    console.error("❌ Error details:", err.response?.data || err.message);
     toast.error("Gagal memproses salah satu file.");
   } finally {
     setIsLoading(false);
     setIsProcessing(false);
+    console.log("🏁 Process completed");
     toast.success("Selesai memproses file!");
   }
 };
