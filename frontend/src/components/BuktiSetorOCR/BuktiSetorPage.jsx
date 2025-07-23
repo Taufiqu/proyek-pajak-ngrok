@@ -88,8 +88,8 @@ const BuktiSetorPage = () => {
       console.log("✅ Response received:", res);
       console.log("📦 Full response data:", res.data);
       
-      // Perbaiki: Backend mengembalikan 'results' bukan 'data'
-      const rawData = res.data?.results || [];
+      // Backend mengembalikan array langsung, bukan object dengan property 'results'
+      const rawData = Array.isArray(res.data) ? res.data : [];
       console.log("📄 Raw data from backend:", rawData);
 
       const formatted = rawData.map((item) => ({
