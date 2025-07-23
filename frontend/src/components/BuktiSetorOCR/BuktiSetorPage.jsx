@@ -17,6 +17,8 @@ const BuktiSetorPage = () => {
   const [modalSrc, setModalSrc] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [uploadError, setUploadError] = useState("");
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     const savedResults = localStorage.getItem("buktiValidationResults");
@@ -57,9 +59,6 @@ const BuktiSetorPage = () => {
       localStorage.setItem("buktiSelectedFiles", JSON.stringify(selectedFiles.map(f => ({ name: f.name }))));
     }
   }, [selectedFiles]);
-
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const fileInputRef = useRef(null);
 
   // 🔄 Proses file upload satu per satu
  const handleProcess = async () => {
