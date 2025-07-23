@@ -86,14 +86,21 @@ const BuktiSetorPage = () => {
       console.log("🌐 Sending request to processBuktiSetor...");
       const res = await processBuktiSetor(formData);
       console.log("✅ Response received:", res);
+      console.log("📦 Full response data:", res.data);
       
-      const rawData = res.data?.data || [];
+      // Perbaiki: Backend mengembalikan 'results' bukan 'data'
+      const rawData = res.data?.results || [];
       console.log("📄 Raw data from backend:", rawData);
 
       const formatted = rawData.map((item) => ({
-        ...item,
+        // Flatten structure: ambil data dari nested object
+        kode_setor: item.data?.kode_setor || "",
+        tanggal: item.data?.tanggal || "",
+        jumlah: item.data?.jumlah || 0,
+        halaman: item.halaman || 1,
+        // Perbaiki nama field untuk preview
+        preview_filename: item.preview_image || file.name,
         id: `bukti-${Date.now()}-${Math.random()}`,
-        preview_filename: item.preview_filename || file.name,
       }));
 
       console.log("🔧 Formatted data:", formatted);
