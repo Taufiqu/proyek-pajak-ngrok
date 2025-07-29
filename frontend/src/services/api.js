@@ -6,6 +6,8 @@ import axios from "axios";
 // ========= BASE URL =========
 // Pastikan ini selalu menjadi satu-satunya sumber URL API Anda.
 const API_URL = process.env.REACT_APP_API_URL;
+const TESSER_OCR_URL = process.env.REACT_APP_TESSER_OCR_URL;
+const EASY_OCR_URL = process.env.REACT_APP_EASY_OCR_URL;
 
 // ========= AXIOS INSTANCES =========
 
@@ -19,8 +21,14 @@ export const api = axios.create({
 });
 
 // 🔸 Instance khusus untuk upload file (FormData)
-export const apiForm = axios.create({
-  baseURL: API_URL, // <-- Selalu gunakan variabel dari .env
+export const TessapiForm = axios.create({
+  baseURL: TESSER_OCR_URL, // <-- Selalu gunakan variabel dari .env
+  timeout: 300000, // Timeout lebih lama untuk upload besar
+});
+
+// 🔸 Instance khusus untuk upload file (FormData)
+export const EasyapiForm = axios.create({
+  baseURL: EASY_OCR_URL, // <-- Selalu gunakan variabel dari .env
   timeout: 300000, // Timeout lebih lama untuk upload besar
 });
 
@@ -28,7 +36,7 @@ export const apiForm = axios.create({
 
 // --- FAKTUR ---
 // 🔥 DIPERBAIKI: Endpoint ini sekarang menunjuk ke alamat yang benar untuk FAKTUR.
-export const processFaktur = (formData) => apiForm.post("/api/process", formData);
+export const processFaktur = (formData) => TessapiForm.post("/api/process", formData);
 export const saveFaktur = (data) => api.post("/api/save", data);
 export const deleteFaktur = (jenis, id) => api.delete(`/api/delete/${jenis}/${id}`);
 export const fetchFakturHistory = () => api.get("/api/history");
@@ -36,7 +44,7 @@ export const fetchFakturHistory = () => api.get("/api/history");
 
 // --- BUKTI SETOR ---
 // ✅ BENAR: Endpoint ini sudah benar untuk BUKTI SETOR.
-export const processBuktiSetor = (formData) => apiForm.post("/api/bukti_setor/process", formData);
+export const processBuktiSetor = (formData) => EasyapiForm.post("/api/bukti_setor/process", formData);
 export const saveBuktiSetor = (data) => api.post("/api/bukti_setor/save", data);
 export const deleteBuktiSetor = (id) => api.delete(`/api/bukti_setor/delete/${id}`);
 export const fetchBuktiSetorHistory = () => api.get("/api/bukti_setor/history");
