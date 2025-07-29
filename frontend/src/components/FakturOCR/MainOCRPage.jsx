@@ -10,9 +10,12 @@ import TutorialPanel from "./TutorialPanel";
 import Layout from "../Layout";
 import LoadingSpinner from "../LoadingSpinner";
 import ImageModal from "./ImageModal";
+import "../ServiceStatus.css";
 import {
   processFaktur,
   saveFaktur,
+  handleApiError,
+  testFakturConnection,
 } from "../../services/api";
 
 function App() {
@@ -23,8 +26,25 @@ function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [uploadError, setUploadError] = useState("");
   const [modalSrc, setModalSrc] = useState(null);
+  const [serviceStatus, setServiceStatus] = useState({ connected: null, message: "" });
 
   const fileInputRef = useRef(null);
+
+  // Test service connection saat component mount
+  useEffect(() => {
+    const checkServiceConnection = async () => {
+      console.log("🔍 Checking service connection on mount...");
+      const result = await testFakturConnection();
+      setServiceStatus({
+        connected: result.success,
+        message: result.success 
+          ? "✅ Railway service terhubung" 
+          : `❌ Service tidak dapat diakses: ${result.error}`
+      });
+    };
+
+    checkServiceConnection();
+  }, []);
 
   useEffect(() => {
     const savedPages = localStorage.getItem("formPages");
@@ -77,7 +97,18 @@ function App() {
       toast.success("Semua file berhasil diproses!");
     } catch (error) {
       console.error("Upload error:", error);
-      toast.error("Terjadi kesalahan saat upload.");
+      const errorMessage = handleApiError(error);
+      toast.error(errorMessage);
+      
+      // Jika error 502, coba test connection untuk diagnose
+      if (error.response?.status === 502) {
+        console.log("🔍 Testing service connection due to 502 error...");
+        testFakturConnection().then(result => {
+          if (!result.success) {
+            console.error("🚨 Service connection test failed:", result.error);
+          }
+        });
+      }
     } finally {
       setIsProcessing(false);
     }
@@ -176,6 +207,18 @@ function App() {
       {isProcessing && <LoadingSpinner message="Sedang memproses file..." />}
 
       <h1 className="page-title">OCR Faktur Pajak</h1>
+
+      {/* Service Status Display */}
+      {serviceStatus.connected !== null && (
+        <div className={`service-status ${serviceStatus.connected ? 'connected' : 'disconnected'}`}>
+          <p>{serviceStatus.message}</p>
+          {!serviceStatus.connected && (
+            <small>
+              🔧 Jika Anda melihat error CORS atau 502, pastikan Railway service aktif dan CORS dikonfigurasi untuk https://pajak-ocr.vercel.app
+            </small>
+          )}
+        </div>
+      )}
 
       <UploadForm
         handleUpload={handleUpload}
