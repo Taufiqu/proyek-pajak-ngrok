@@ -101,10 +101,11 @@ export const transformRailwayResponse = (railwayResponse) => {
       data: railwayResponse.extracted_data,
       halaman: 1,
       preview_image: railwayResponse.filename || 'unknown.jpg',
+      preview_url: railwayResponse.preview_url, // ✅ ADD: Use preview_url from backend
       id: `faktur-${Date.now()}-${Math.random()}`
     };
     
-    console.log("✅ Transformed data:", transformedData);
+    console.log("✅ Transformed data with preview_url:", transformedData);
     
     return {
       data: {
@@ -203,4 +204,24 @@ export const handleApiError = (error) => {
     return 'Terjadi kesalahan di server. Silakan coba lagi nanti.';
   }
   return error.message || 'Terjadi kesalahan yang tidak diketahui.';
+};
+
+// ✅ NEW: Helper function untuk construct preview URL dengan benar
+export const getPreviewUrl = (itemData, serviceType = 'faktur') => {
+  const baseUrl = serviceType === 'faktur' 
+    ? process.env.REACT_APP_FAKTUR_SERVICE_URL 
+    : process.env.REACT_APP_BUKTI_SETOR_SERVICE_URL;
+    
+  // Prioritas: gunakan preview_url dari backend jika ada
+  if (itemData?.preview_url) {
+    return `${baseUrl}${itemData.preview_url}`;
+  }
+  
+  // Fallback: construct manual jika hanya ada filename
+  if (itemData?.preview_image) {
+    return `${baseUrl}/preview/${itemData.preview_image}`;
+  }
+  
+  console.warn("⚠️ No preview URL or image available:", itemData);
+  return null;
 };

@@ -17,6 +17,7 @@ import {
   handleApiError,
   testFakturConnection,
   transformRailwayResponse,
+  getPreviewUrl,
 } from "../../services/api";
 
 function App() {
@@ -215,7 +216,11 @@ function App() {
 
   console.log("🧠 currentPage (dari formPages):", currentPage);
   console.log("🖼️ preview_image:", currentPage?.preview_image);
-  console.log("🔍 Railway preview URL:", `${process.env.REACT_APP_FAKTUR_SERVICE_URL}/preview/${currentPage?.preview_image}`);
+  console.log("� preview_url dari backend:", currentPage?.preview_url);
+  
+  // ✅ FIX: Use helper function untuk construct preview URL dengan benar
+  const finalPreviewUrl = getPreviewUrl(currentPage, 'faktur');
+  console.log("🔍 Final preview URL (using helper):", finalPreviewUrl);
 
   return (
     <Layout>
@@ -251,17 +256,13 @@ function App() {
             <div className="preview-column">
               <PreviewPanel
                 data={currentPage}
-                onImageClick={() =>
-                  setModalSrc(`${process.env.REACT_APP_FAKTUR_SERVICE_URL}/preview/${currentPage.preview_image}`)
-                }
+                onImageClick={() => setModalSrc(finalPreviewUrl)}
               />
             </div>
             <div className="form-column">
               <ValidationForm
                 data={currentPage.data}
-                onImageClick={() =>
-                  setModalSrc(`${process.env.REACT_APP_FAKTUR_SERVICE_URL}/preview/${currentPage.preview_image}`)
-                }
+                onImageClick={() => setModalSrc(finalPreviewUrl)}
                 updateData={(updatedFields) => {
                   const updated = [...formPages];
                   updated[currentIndex].data = {

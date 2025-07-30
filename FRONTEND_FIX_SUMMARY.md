@@ -1,7 +1,8 @@
-# 🔧 FRONTEND FIX SUMMARY - Railway Response Structure Update
+# 🔧 FRONTEND FIX SUMMARY - Railway Response Structure & Preview URL Fix
 
-## 🎯 **Problem Fixed**
-Frontend expected old response structure, but Railway returns new structure with `extracted_data` object.
+## 🎯 **Problems Fixed**
+1. ❌ Frontend expected old response structure, but Railway returns new structure with `extracted_data` object
+2. ❌ Manual preview URL construction instead of using backend-provided `preview_url`
 
 ## ⚡ **Key Changes Made**
 
@@ -16,6 +17,7 @@ export const transformRailwayResponse = (railwayResponse) => {
           data: railwayResponse.extracted_data,
           halaman: 1,
           preview_image: railwayResponse.filename || 'unknown.jpg',
+          preview_url: railwayResponse.preview_url, // ✅ NEW: Use backend preview_url
           id: `faktur-${Date.now()}-${Math.random()}`
         }]
       }
@@ -25,25 +27,42 @@ export const transformRailwayResponse = (railwayResponse) => {
 };
 ```
 
-### 2. **🔄 Updated processFaktur Function**
-- Added automatic response transformation
-- Enhanced error handling and logging
-- Return format consistent with frontend expectations
-
-### 3. **🖼️ Preview Image URL Fix**
+### 2. **� New Helper Function for Preview URLs**
 ```javascript
-// OLD: Used generic API_URL
-src={`${process.env.REACT_APP_API_URL}/preview/${data.preview_image}`}
+// ✅ NEW: Helper function untuk construct preview URL dengan benar
+export const getPreviewUrl = (itemData, serviceType = 'faktur') => {
+  const baseUrl = serviceType === 'faktur' 
+    ? process.env.REACT_APP_FAKTUR_SERVICE_URL 
+    : process.env.REACT_APP_BUKTI_SETOR_SERVICE_URL;
+    
+  // Prioritas: gunakan preview_url dari backend jika ada
+  if (itemData?.preview_url) {
+    return `${baseUrl}${itemData.preview_url}`;
+  }
+  
+  // Fallback: construct manual jika hanya ada filename
+  if (itemData?.preview_image) {
+    return `${baseUrl}/preview/${itemData.preview_image}`;
+  }
+  
+  return null;
+};
+```
 
-// NEW: Use specific Railway service URL
-src={`${process.env.REACT_APP_FAKTUR_SERVICE_URL}/preview/${data.preview_image}`}
+### 3. **🖼️ Fixed Preview URL Construction**
+```javascript
+// OLD: Manual construction yang salah
+const railwayPreviewUrl = `${process.env.REACT_APP_FAKTUR_SERVICE_URL}/preview/${data.preview_image}`;
+
+// NEW: Use helper function dengan preview_url dari backend
+const previewUrl = getPreviewUrl(data, 'faktur');
 ```
 
 ### 4. **📊 Enhanced Logging & Debug**
-- Added comprehensive logging in handleUpload
-- Debug Railway response structure
-- Track transformation process
-- Error details for troubleshooting
+- Added comprehensive logging dalam transformation
+- Debug backend preview_url vs manual construction  
+- Track helper function usage
+- Enhanced error details untuk troubleshooting
 
 ## 📋 **Response Structure Mapping**
 
@@ -59,6 +78,7 @@ src={`${process.env.REACT_APP_FAKTUR_SERVICE_URL}/preview/${data.preview_image}`
     "ppn": 110000.00
   },
   "filename": "done (1).jpg",
+  "preview_url": "/uploads/preview/done_1_abc123.jpg", // ✅ Use this!
   "mode": "demo"
 }
 ```
@@ -68,15 +88,10 @@ src={`${process.env.REACT_APP_FAKTUR_SERVICE_URL}/preview/${data.preview_image}`
 {
   "data": {
     "results": [{
-      "data": {
-        "no_faktur": "010.002-25.00000001",
-        "tanggal": "2025-01-15",
-        "nama_lawan_transaksi": "PT. CONTOH SUPPLIER",
-        "dpp": 1000000.00,
-        "ppn": 110000.00
-      },
+      "data": { /* extracted_data here */ },
       "halaman": 1,
       "preview_image": "done (1).jpg",
+      "preview_url": "/uploads/preview/done_1_abc123.jpg", // ✅ Passed through
       "id": "faktur-1659123456789-0.123"
     }]
   }
@@ -86,19 +101,20 @@ src={`${process.env.REACT_APP_FAKTUR_SERVICE_URL}/preview/${data.preview_image}`
 ## 🎯 **Files Modified**
 
 ### ✅ **api.js**
-- Added `transformRailwayResponse` function
-- Updated `processFaktur` to use transformer
-- Enhanced error handling
+- ✅ Added `preview_url` to `transformRailwayResponse`
+- ✅ Created `getPreviewUrl` helper function
+- ✅ Enhanced error handling untuk preview URLs
 
 ### ✅ **MainOCRPage.jsx**
-- Updated import to include transformer
-- Enhanced handleUpload logging
-- Fixed preview image URLs to use Railway service
-- Added response structure validation
+- ✅ Added import untuk `getPreviewUrl`
+- ✅ Updated console logging untuk show `preview_url`
+- ✅ Use `getPreviewUrl` helper function
+- ✅ Updated modal onClick handlers
 
 ### ✅ **PreviewPanel.js**
-- Updated preview image URL to use `REACT_APP_FAKTUR_SERVICE_URL`
-- Added error handling for image load failures
+- ✅ Added import untuk `getPreviewUrl`
+- ✅ Use helper function instead of manual construction
+- ✅ Enhanced error logging dengan available data
 
 ### ✅ **.env**
 - Configured Railway service URLs:
