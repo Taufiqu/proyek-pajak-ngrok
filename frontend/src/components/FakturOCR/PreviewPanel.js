@@ -5,15 +5,17 @@ const PreviewPanel = ({ data, onImageClick }) => {
 
   console.log("🧪 Data masuk ke PreviewPanel:", data);
   console.log("🧪 preview_image:", data.preview_image);
-  console.log("🧪 Final img src:", `${process.env.REACT_APP_API_URL}/preview/${data.preview_image}`);
-  console.log("📸 Final Preview Image:", data.preview_image);
+  
+  // Gunakan Railway URL untuk preview image
+  const railwayPreviewUrl = `${process.env.REACT_APP_FAKTUR_SERVICE_URL}/preview/${data.preview_image}`;
+  console.log("🧪 Railway preview URL:", railwayPreviewUrl);
 
   return (
     <div className="preview-panel">
-      <h3>Preview Halaman {data.halaman}</h3>
+      <h3>Preview Halaman {data.halaman || 1}</h3>
       {data.preview_image ? (
         <img
-          src={`${process.env.REACT_APP_API_URL}/preview/${data.preview_image}`}
+          src={railwayPreviewUrl}
           alt="Preview"
           onClick={onImageClick}
           style={{
@@ -21,6 +23,10 @@ const PreviewPanel = ({ data, onImageClick }) => {
             cursor: "zoom-in",
             border: "1px solid #ccc",
             borderRadius: "8px"
+          }}
+          onError={(e) => {
+            console.error("❌ Preview image load failed:", railwayPreviewUrl);
+            e.target.style.display = 'none';
           }}
         />
       ) : (

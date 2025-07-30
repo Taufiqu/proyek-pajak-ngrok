@@ -16,6 +16,7 @@ import {
   saveFaktur,
   handleApiError,
   testFakturConnection,
+  transformRailwayResponse,
 } from "../../services/api";
 
 function App() {
@@ -76,25 +77,39 @@ function App() {
       const allPages = [];
 
       for (const file of selectedFiles) {
+        console.log(`📁 Processing file: ${file.name}`);
         const formData = new FormData();
         formData.append("file", file);
         formData.append("nama_pt_utama", namaPtUtama);
 
-        const res = await processFaktur(formData);
-
+        // Log FormData contents for debugging
         for (let [key, value] of formData.entries()) {
-          console.log(`${key}:`, value);
+          console.log(`📋 FormData ${key}:`, value);
         }
 
-        if (res.data?.results) {
+        const res = await processFaktur(formData);
+        console.log("📦 Full response for", file.name, ":", res);
+
+        // Response sudah ditransform oleh processFaktur function
+        if (res.data?.results && Array.isArray(res.data.results)) {
+          console.log("✅ Adding results to allPages:", res.data.results);
           allPages.push(...res.data.results);
         } else {
-          toast.error("Data hasil tidak ditemukan.");
+          console.warn("⚠️ No results found in response for", file.name);
+          console.log("🔍 Response structure:", res.data);
+          toast.warn(`Tidak ada data yang berhasil diekstrak dari ${file.name}`);
         }
       }
 
-      setFormPages(allPages);
-      toast.success("Semua file berhasil diproses!");
+      console.log("🎯 Total pages processed:", allPages.length);
+      console.log("📊 All pages data:", allPages);
+      
+      if (allPages.length > 0) {
+        setFormPages(allPages);
+        toast.success(`✅ Berhasil memproses ${allPages.length} halaman dari ${selectedFiles.length} file!`);
+      } else {
+        toast.warn("⚠️ Tidak ada data yang berhasil diekstrak dari file yang diupload.");
+      }
     } catch (error) {
       console.error("Upload error:", error);
       const errorMessage = handleApiError(error);
@@ -200,7 +215,7 @@ function App() {
 
   console.log("🧠 currentPage (dari formPages):", currentPage);
   console.log("🖼️ preview_image:", currentPage?.preview_image);
-  console.log("🔍 src:", `${process.env.REACT_APP_API_URL}/preview/${currentPage?.preview_image}`);
+  console.log("🔍 Railway preview URL:", `${process.env.REACT_APP_FAKTUR_SERVICE_URL}/preview/${currentPage?.preview_image}`);
 
   return (
     <Layout>
@@ -237,7 +252,7 @@ function App() {
               <PreviewPanel
                 data={currentPage}
                 onImageClick={() =>
-                  setModalSrc(`${process.env.REACT_APP_API_URL}/preview/${currentPage.preview_image}`)
+                  setModalSrc(`${process.env.REACT_APP_FAKTUR_SERVICE_URL}/preview/${currentPage.preview_image}`)
                 }
               />
             </div>
@@ -245,7 +260,7 @@ function App() {
               <ValidationForm
                 data={currentPage.data}
                 onImageClick={() =>
-                  setModalSrc(`${process.env.REACT_APP_API_URL}/preview/${currentPage.preview_image}`)
+                  setModalSrc(`${process.env.REACT_APP_FAKTUR_SERVICE_URL}/preview/${currentPage.preview_image}`)
                 }
                 updateData={(updatedFields) => {
                   const updated = [...formPages];

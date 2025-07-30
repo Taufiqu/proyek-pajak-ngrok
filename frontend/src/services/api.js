@@ -89,16 +89,62 @@ fakturFormApi.interceptors.response.use(
   }
 );
 
+// ========= RESPONSE TRANSFORMERS =========
+
+// 🔄 Transform Railway response to frontend expected format
+export const transformRailwayResponse = (railwayResponse) => {
+  console.log("🔄 Transforming Railway response:", railwayResponse);
+  
+  if (railwayResponse.status === 'success' && railwayResponse.extracted_data) {
+    // Convert Railway response ke format yang diharapkan frontend
+    const transformedData = {
+      data: railwayResponse.extracted_data,
+      halaman: 1,
+      preview_image: railwayResponse.filename || 'unknown.jpg',
+      id: `faktur-${Date.now()}-${Math.random()}`
+    };
+    
+    console.log("✅ Transformed data:", transformedData);
+    
+    return {
+      data: {
+        results: [transformedData] // Frontend expect array of results
+      }
+    };
+  }
+  
+  // Fallback untuk format lama
+  return railwayResponse;
+};
+
 // ========= ENDPOINTS =========
 
 // --- FAKTUR SERVICE (OCR + Database Integrated) ---
-export const processFaktur = (formData) => {
+export const processFaktur = async (formData) => {
   console.log("🚀 Processing Faktur with Railway API:", FAKTUR_SERVICE_URL);
-  return fakturFormApi.post("/api/process", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  
+  try {
+    const response = await fakturFormApi.post("/api/process", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    
+    console.log("📦 Raw Railway response:", response.data);
+    
+    // Transform Railway response ke format frontend
+    const transformedResponse = {
+      ...response,
+      data: transformRailwayResponse(response.data).data
+    };
+    
+    console.log("🔄 Transformed response:", transformedResponse.data);
+    return transformedResponse;
+    
+  } catch (error) {
+    console.error("❌ processFaktur error:", error.response?.data || error.message);
+    throw error;
+  }
 };
 
 export const saveFaktur = (data) => {
